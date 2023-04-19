@@ -1,0 +1,40 @@
+{
+  "development": {
+    "username": "yourdevelopmentusername",
+    "password": "YourDevelopmentPassword",
+    "database": "tag_openmrs_anc2_anc1",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "define": {
+      "timestamps": true,
+      "freezeTableName": true
+    },
+    "logging": false,
+    "port": 3306
+  },
+  "openmrsConfig": {
+    "username": "YourOpenmrsUsername",
+    "password": "YourOpenmrsPassword",
+    "apiURL": "http://localhost:9000/openmrs/ws/rest/v1",
+    "headers": {
+        "Postman-Token": "",
+        "cache-control": "no-cache",
+        "Content-Type": "application/json",
+        "apikey": ""
+    }
+},
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
