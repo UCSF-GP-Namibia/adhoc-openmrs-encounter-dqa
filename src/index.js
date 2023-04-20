@@ -7,7 +7,11 @@ const app = express();
 const { tag_openmrs_anc2_anc1 } = require("./models");
 
 const readData = require("./database/builder");
-const { postAncData } = require("./openmrs/openmrs-api");
+const {
+  postAncData,
+  getObsByEncounterUuid,
+  deleteObs,
+} = require("./openmrs/openmrs-api");
 
 const port = process.env.PORT;
 
@@ -23,7 +27,27 @@ app.get("/", async (req, res) => {
   console.log("********* Please wait while updating ANC data *****");
   const d = await Promise.all(
     data.map(async (item, index) => {
+      console.log(item.dataValues.uuid);
+
+      const encouterWithObs = await getObsByEncounterUuid(
+        item.dataValues["uuid"],
+        item.dataValues
+      );
+      const returnVisitObs = await encouterWithObs.body.obs.find(
+        (obj) => obj.display === "Visit type: Return ANC Visit"
+      );
+
+      if (returnVisitObs) {
+        const deletedObs = await deleteObs(
+          returnVisitObs.uuid,
+          item.dataValues
+        );
+
+        console.log(deletedObs);
+      }
+
       const data = await postAncData(item.dataValues);
+      console.log(data.body);
     })
   );
   if (d) {

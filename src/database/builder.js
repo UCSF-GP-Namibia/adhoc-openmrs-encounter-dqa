@@ -4,7 +4,7 @@ const Op = Sequelize.Op;
 
 const readData = async (model) => {
   const foundItems = await model.findAll({
-    limit:10,
+    limit:2,
     where: {
       [Op.or]: [{ status: null }],
     },  

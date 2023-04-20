@@ -7,7 +7,7 @@ const { tag_openmrs_anc2_anc1 } = require("../models");
 const sendRequest = (options, data) => {
   return new Promise((resolve, reject) => {
     request(options, (err, response, body) => {
-      if (err){
+      if (err) {
         tag_openmrs_anc2_anc1.update(
           {
             request_error: `${err}`,
@@ -22,7 +22,7 @@ const sendRequest = (options, data) => {
       }
       const contentType = response.headers["content-type"];
       if (contentType && contentType.indexOf("application/json") !== -1) {
-        if(data["uuid"] != null){
+        if (data["uuid"] != null) {
           tag_openmrs_anc2_anc1.update(
             {
               request_error: null,
@@ -42,10 +42,42 @@ const sendRequest = (options, data) => {
   });
 };
 
-const postAncData = async (ancData) => {
+const getObsByEncounterUuid = async (encounterUuid, ancData) => {
+  let options = {
+    method: "GET",
+    url: `${config.openmrsConfig.apiURL}/encounter/${encounterUuid}`,
+    qs: {},
+    headers: config.openmrsConfig.headers,
+    form: false,
+    auth: {
+      user: config.openmrsConfig.username,
+      pass: config.openmrsConfig.password,
+    },
+    json: true,
+  };
+  return sendRequest(options, ancData);
+};
 
+const deleteObs = async (obsUuid, ancData) => {
+  let options = {
+    method: "DELETE",
+    url: `${config.openmrsConfig.apiURL}/obs/${obsUuid}`,
+    qs: {},
+    headers: config.openmrsConfig.headers,
+    form: false,
+    auth: {
+      user: config.openmrsConfig.username,
+      pass: config.openmrsConfig.password,
+    },
+    json: true,
+  };
+  return sendRequest(options, ancData);
+};
+
+const postAncData = async (ancData) => {
   try {
     const data = await updateAncEcounters(ancData);
+
     if (data.response.statusCode == 200) {
       console.log(
         `******** Updating ANC2 to ANC1 for ${ancData["ptracker_identifier"]} *************`
@@ -107,7 +139,7 @@ const updateAncEcounters = async (ancData) => {
       pass: config.openmrsConfig.password,
     },
     json: true,
-    body: body
+    body: body,
   };
   return sendRequest(options, ancData);
 };
@@ -154,4 +186,6 @@ module.exports = {
   getObs,
   updateAncEcounters,
   postAncData,
+  getObsByEncounterUuid,
+  deleteObs,
 };
