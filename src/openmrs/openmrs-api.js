@@ -95,7 +95,6 @@ const updateAncEcounters = async (ancData) => {
   let body = {
     form: uuids.forms.anc_form,
     obs,
-    ancData
   };
   let options = {
     method: "POST",
