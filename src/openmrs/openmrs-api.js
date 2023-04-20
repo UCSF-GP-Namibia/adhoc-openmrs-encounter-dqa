@@ -124,6 +124,7 @@ const postAncData = async (ancData) => {
 
 const updateAncEcounters = async (ancData) => {
   const obs = await getObs(ancData);
+  // console.log("to send", obs);
   let body = {
     form: uuids.forms.anc_form,
     obs,
@@ -145,6 +146,7 @@ const updateAncEcounters = async (ancData) => {
 };
 
 const getObs = async (data) => {
+  // console.log("Getting obs", data);
   if (data) {
     let obs = [];
     // --ANC--
@@ -174,6 +176,30 @@ const getObs = async (data) => {
       });
     } else {
       console.log("Missing anc_para!");
+    }
+    //anc_lnmp
+    if (data.LNMP == 'Missing') {
+      obs.push({
+        concept: uuids.obs.missing_anc_lnmp,
+        value: true,
+      });
+    } else {
+      obs.push({
+        concept: uuids.obs.anc_lnmp,
+        value: data.LNMP,
+      }); 
+    }
+    //anc_edd
+    if (data.EDD == 'Missing') {
+      obs.push({
+        concept: uuids.obs.missing_anc_edd,
+        value: true,
+      });
+    } else {
+      obs.push({
+        concept: uuids.obs.anc_edd_calculated,
+        value: data.EDD,
+      });
     }
     return obs;
   } else {

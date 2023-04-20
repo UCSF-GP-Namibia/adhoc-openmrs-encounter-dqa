@@ -19,42 +19,57 @@ app.get("/", async (req, res) => {
   res.send(
     "PTracker node app,  incorrectly captured ANC 2nd visit to ANC 1st visit!"
   );
-  const data = await readData.readData(tag_openmrs_anc2_anc1);
-  if (data.length <= 0) {
-    console.log("*********No ANC data to update*****");
-    return;
-  }
-  console.log("********* Please wait while updating ANC data *****");
-  const d = await Promise.all(
-    data.map(async (item, index) => {
-      console.log(item.dataValues.uuid);
+  try {
+    const data = await readData.readData(tag_openmrs_anc2_anc1);
+    if (data.length <= 0) {
+      console.log("*********No ANC data to update*****");
+      return;
+    }
+    console.log("********* Please wait while updating ANC data *****");
+    const d = await Promise.all(
+      data.map(async (item, index) => {
+        // console.log(item.dataValues.uuid);
 
-      const encouterWithObs = await getObsByEncounterUuid(
-        item.dataValues["uuid"],
-        item.dataValues
-      );
-      const returnVisitObs = await encouterWithObs.body.obs.find(
-        (obj) => obj.display === "Visit type: Return ANC Visit"
-      );
-
-      if (returnVisitObs) {
-        const deletedObs = await deleteObs(
-          returnVisitObs.uuid,
+        const encouterWithObs = await getObsByEncounterUuid(
+          item.dataValues["uuid"],
           item.dataValues
         );
+        const returnVisitObs = await encouterWithObs.body.obs.find(
+          (obj) => obj.display === "Visit type: Return ANC Visit"
+        );
+        // console.log("returnVisitObs", returnVisitObs);
 
-        console.log(deletedObs);
-      }
+        if (returnVisitObs != undefined) {
+          const deletedObs = await deleteObs(
+            returnVisitObs.uuid,
+            item.dataValues
+          );
 
-      const data = await postAncData(item.dataValues);
-      console.log(data.body);
-    })
-  );
-  if (d) {
-    console.log(
-      "**************************** ANC update done ***************************"
+          return await postAncData(item.dataValues);
+          // console.log("checking", data.body);
+        } else {
+          tag_openmrs_anc2_anc1.update(
+            {
+              error: `No return visist ob found for this encounter!`,
+              status: "NO ACTION ON THIS ENCOUNTER",
+            },
+            {
+              where: {
+                uuid: item.dataValues["uuid"],
+              },
+            }
+          );
+        }
+      })
     );
-    return;
+    if (d) {
+      console.log(
+        "**************************** ANC update done ***************************"
+      );
+      return;
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 

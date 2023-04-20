@@ -63,6 +63,20 @@ module.exports = (sequelize, DataTypes) => {
                 notEmpty: true
             }
         },
+        LNMP: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        EDD: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
         status: {
             type: DataTypes.TEXT,
             allowNull: true,
