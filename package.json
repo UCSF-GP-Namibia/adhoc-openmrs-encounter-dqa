@@ -1,0 +1,24 @@
+{
+  "name": "app-anc2-to-anc1",
+  "version": "1.0.0",
+  "description": "update incorrectly captured ANC 2nd visit to ANC 1st visit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --experimental-json-modules src/index.js"
+  },
+  "author": "Hero",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mysql2": "^3.2.0",
+    "request": "^2.88.2",
+    "sequelize": "^6.31.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "nodemon": "^2.0.22",
+    "sequelize-cli": "^6.6.0"
+  }
+}
