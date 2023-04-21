@@ -60,6 +60,7 @@ app.get("/", async (req, res) => {
             }
           );
         }
+        console.log(`********* NO Action for ${item.dataValues.ptracker_identifier} *****`);
       })
     );
     if (d) {
